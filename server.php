@@ -4,23 +4,27 @@
 require __DIR__ . '/vendor/autoload.php';
 
 
-use Psr\Http\Message\ServerRequestInterface;
 use React\EventLoop\Factory;
-use React\Http\Message\Response;
 use React\Http\Server;
 use \React\Socket\Server as Socket;
+use FastRoute\RouteCollector;
+use FastRoute\DataGenerator\GroupCountBased;
+use FastRoute\RouteParser\Std;
+
+
+use App\Core\Router;
+use App\Authentication\SignUpController;
 
 
 $loop = Factory::create();
+
+$routes = new RouteCollector(new Std(), new GroupCountBased());
+
+$routes->post('/auth/signup', new SignUpController());
+
 $server = new Server(
     $loop,
-    function (ServerRequestInterface $request) {
-        return new Response(
-            200,
-            ['Content-Type' => 'application/json'],
-            json_encode(['message' => 'Hello'])
-        );
-    }
+    new Router($routes)
 );
 
 $socket = new Socket('0.0.0.0:8000', $loop);
