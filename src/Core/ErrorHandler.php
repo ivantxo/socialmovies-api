@@ -9,6 +9,9 @@ use React\Http\Message\Response;
 use \Throwable;
 
 
+use App\Core\JsonResponse;
+
+
 final class ErrorHandler
 {
     public function __invoke(ServerRequestInterface $request, callable $next)
@@ -18,11 +21,7 @@ final class ErrorHandler
         } catch (Throwable $error) {
             echo '--------------Error--------------' . PHP_EOL
                 . $error->getTraceAsString() . PHP_EOL;
-            return new Response(
-                500,
-                ['Content-Type' => 'application/json'],
-                json_encode(['message' => $error->getMessage()])
-            );
+            return JsonResponse::internalServerError($error->getMessage());
         }
     }
 }
