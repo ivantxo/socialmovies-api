@@ -14,6 +14,13 @@ final class SignUpController
 {
     public function __invoke(ServerRequestInterface $request)
     {
-        return JsonResponse::ok(['message' => 'POST request to /auth/signup']);
+        $user = [
+            'email' => $request->getParsedBody()['email'],
+            'password' => $request->getParsedBody()['password'],
+        ];
+        return JsonResponse::ok([
+            'message' => 'POST request to /auth/signup',
+            'user' => $user,
+        ]);
     }
 }

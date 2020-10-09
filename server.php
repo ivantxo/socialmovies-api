@@ -14,6 +14,7 @@ use FastRoute\RouteParser\Std;
 
 use App\Core\Router;
 use App\Core\ErrorHandler;
+use App\Core\JsonRequestDecoder;
 use App\Authentication\SignUpController;
 
 
@@ -26,6 +27,7 @@ $routes->post('/auth/signup', new SignUpController());
 $server = new Server(
     $loop,
     new ErrorHandler(),
+    new JsonRequestDecoder(),
     new Router($routes)
 );
 
