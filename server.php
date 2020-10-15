@@ -28,10 +28,11 @@ use App\Notifications\DeleteNotification;
 use App\Notifications\GetAllNotifications;
 use App\Notifications\GetNotificationsByUserId;
 use App\Notifications\MarkNotificationsRead;
-use App\Posts\CreatePost;
-use App\Posts\DeletePost;
-use App\Posts\GetAllPosts;
-use App\Posts\GetPostById;
+use App\Posts\Storage as Posts;
+use App\Posts\Controller\CreatePost;
+use App\Posts\Controller\DeletePost;
+use App\Posts\Controller\GetAllPosts;
+use App\Posts\Controller\GetPostById;
 use App\Users\AddUserDetails;
 use App\Users\GetUserDetails;
 
@@ -46,6 +47,7 @@ $uri = $_ENV['DB_USER']
     . '@' . $_ENV['DB_HOST']
     . '/' . $_ENV['DB_NAME'];
 $connection = $mysql->createLazyConnection($uri);
+$posts = new Posts($connection);
 
 $routes = new RouteCollector(new Std(), new GroupCountBased());
 
@@ -71,7 +73,7 @@ $routes->post('/notificationsread', new MarkNotificationsRead());
 // posts routes
 $routes->post('/posts', new CreatePost());
 $routes->delete('/posts/{id:\d+}', new DeletePost());
-$routes->get('/posts', new GetAllPosts());
+$routes->get('/posts', new GetAllPosts($posts));
 $routes->get('/posts/{id:\d+}', new GetPostById());
 
 // users routes

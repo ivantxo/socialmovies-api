@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\Posts;
+namespace App\Posts\Controller;
 
 
 use Psr\Http\Message\ServerRequestInterface;
