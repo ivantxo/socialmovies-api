@@ -46,7 +46,7 @@ final class GetAllPosts
             function (Post $post) {
                 return Output::fromEntity(
                     $post,
-                    Request::listOfProducts()
+                    Request::detailedProduct($post->id)
                 );
             },
             $posts
