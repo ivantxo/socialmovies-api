@@ -28,4 +28,29 @@ final class JsonResponse
     {
         return self::response(500, ['messsage' => $reason]);
     }
+
+    public static function created($data): Response
+    {
+        return self::response(201, $data);
+    }
+
+    public static function badRequest(array $errors): Response
+    {
+        return self::response(400, ['errors' => $errors]);
+    }
+
+    public static function unauthorised(): Response
+    {
+        return self::response(401);
+    }
+
+    public static function notFound(): Response
+    {
+        return self::response(404);
+    }
+
+    public static function noContent(): Response
+    {
+        return self::response(204);
+    }
 }
