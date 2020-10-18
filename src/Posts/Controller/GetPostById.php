@@ -36,7 +36,7 @@ final class GetPostById
                     $response = [
                         'post' => Output::fromEntity(
                             $post,
-                            Request::detailedProduct($post->id)
+                            Request::detailedPost($post->id)
                         ),
                     ];
                     return JsonResponse::ok($response);

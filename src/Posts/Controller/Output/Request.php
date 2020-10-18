@@ -30,22 +30,22 @@ final class Request
         $this->body = $body;
     }
 
-    public static function detailedProduct(int $id): self
+    public static function detailedPost(int $id): self
     {
         return new self('GET', self::URI . $id);
     }
 
-    public static function updateProduct(int $id): self
+    public static function updatePost(int $id): self
     {
         return new self('PUT', self::URI . $id);
     }
 
-    public static function listOfProducts(): self
+    public static function listOfPosts(): self
     {
         return new self('GET', self::URI);
     }
 
-    public static function createProduct(): self
+    public static function createPost(): self
     {
         return new self(
             'POST',

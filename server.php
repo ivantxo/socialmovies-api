@@ -72,7 +72,7 @@ $routes->post('/notificationsread', new MarkNotificationsRead());
 
 // posts routes
 $routes->post('/posts', new CreatePost($posts));
-$routes->delete('/posts/{id:\d+}', new DeletePost());
+$routes->delete('/posts/{id:\d+}', new DeletePost($posts));
 $routes->get('/posts', new GetAllPosts($posts));
 $routes->get('/posts/{id:\d+}', new GetPostById($posts));
 

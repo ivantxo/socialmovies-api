@@ -67,6 +67,19 @@ final class Storage
             );
     }
 
+    public function delete(int $id): PromiseInterface
+    {
+        return $this->connection
+            ->query('DELETE FROM posts WHERE id = ?', [$id])
+            ->then(
+                function (QueryResult $result) {
+                    if ($result->affectedRows === 0) {
+                        throw new PostNotFound();
+                    }
+                }
+            );
+    }
+
     private function mapPost(array $row): Post
     {
         return new Post(
