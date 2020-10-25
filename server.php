@@ -17,6 +17,8 @@ use React\MySQL\Factory as MySQLFactory;
 use App\Core\Router;
 use App\Core\ErrorHandler;
 use App\Core\JsonRequestDecoder;
+use App\Authentication\Storage as Users;
+use App\Authentication\Authenticator;
 use App\Authentication\SignUpController;
 use App\Authentication\SignInController;
 use App\Authentication\GetAuthenticatedUser;
@@ -48,12 +50,14 @@ $uri = $_ENV['DB_USER']
     . '/' . $_ENV['DB_NAME'];
 $connection = $mysql->createLazyConnection($uri);
 $posts = new Posts($connection);
+$users = new Users($connection);
+$authenticator = new Authenticator($users, $_ENV['JWT_KEY']);
 
 $routes = new RouteCollector(new Std(), new GroupCountBased());
 
 // authentication routes
-$routes->post('/auth/signup', new SignUpController());
-$routes->post('/auth/signin', new SignInController());
+$routes->post('/auth/signup', new SignUpController($users));
+$routes->post('/auth/signin', new SignInController($authenticator));
 $routes->get('/user', new GetAuthenticatedUser());
 
 // likes routes

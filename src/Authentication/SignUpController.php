@@ -12,15 +12,29 @@ use App\Core\JsonResponse;
 
 final class SignUpController
 {
+    private $storage;
+
+    public function __construct(Storage $storage)
+    {
+        $this->storage = $storage;
+    }
+
     public function __invoke(ServerRequestInterface $request)
     {
-        $user = [
-            'email' => $request->getParsedBody()['email'],
-            'password' => $request->getParsedBody()['password'],
-        ];
-        return JsonResponse::ok([
-            'message' => 'POST request to /auth/signup',
-            'user' => $user,
-        ]);
+        $input = new Input($request);
+        $input->validate();
+        return $this->storage->create($input->email(), $input->hashedPassword())
+            ->then(
+                function () {
+                    return JsonResponse::created([]);
+                }
+            )
+            ->otherwise(
+                function (UserAlreadyExists $exception) {
+                    return JsonResponse::badRequest(
+                        ['email' => 'Email is already taken']
+                    );
+                }
+            );
     }
 }
