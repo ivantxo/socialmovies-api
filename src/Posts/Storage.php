@@ -12,21 +12,25 @@ use React\Promise\PromiseInterface;
 final class Storage
 {
     /**
-     * @var
+     * @var ConnectionInterface $connection
      */
     private $connection;
 
+    /**
+     * Storage constructor.
+     * @param ConnectionInterface $connection
+     */
     public function __construct(ConnectionInterface $connection)
     {
         $this->connection = $connection;
     }
 
-    public function create(int $user_id, int $like_count): PromiseInterface
+    public function create(int $user_id, string $body, int $like_count): PromiseInterface
     {
         return $this->connection
-            ->query('INSERT INTO posts (user_id, like_count) VALUES(?, ?) ', [$user_id, $like_count])
+            ->query('INSERT INTO posts (user_id, body, like_count) VALUES(?, ?, ?) ', [$user_id, $body, $like_count])
             ->then(
-                function (QueryResult $result) use ($user_id, $like_count) {
+                function (QueryResult $result) {
                     return $this->getById($result->insertId)
                         ->then(
                             function (Post $post) {
@@ -40,7 +44,7 @@ final class Storage
     public function getById(int $id): PromiseInterface
     {
         return $this->connection
-            ->query('SELECT id, user_id, like_count, created_at FROM posts WHERE id = ?', [$id])
+            ->query('SELECT id, user_id, body, like_count, created_at FROM posts WHERE id = ?', [$id])
             ->then(
                 function (QueryResult $result) {
                     if (empty($result->resultRows)) {
@@ -54,7 +58,7 @@ final class Storage
     public function getAll(): PromiseInterface
     {
         return $this->connection
-            ->query('SELECT id, user_id, like_count, created_at FROM posts')
+            ->query('SELECT id, user_id, body, like_count, created_at FROM posts')
             ->then(
                 function (QueryResult $result) {
                     return array_map(
@@ -85,6 +89,7 @@ final class Storage
         return new Post(
             (int)$row['id'],
             (int)$row['user_id'],
+            (int)$row['body'],
             (int)$row['like_count'],
             $row['created_at']
         );
