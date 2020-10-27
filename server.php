@@ -22,8 +22,9 @@ use App\Authentication\Authenticator;
 use App\Authentication\SignUpController;
 use App\Authentication\SignInController;
 use App\Authentication\GetAuthenticatedUser;
-use App\Likes\Like;
-use App\Likes\UnLike;
+use App\Likes\Storage as Likes;
+use App\Likes\Controller\Like;
+use App\Likes\Controller\UnLike;
 use App\Movies\LinkMovie;
 use App\Notifications\CreateNotification;
 use App\Notifications\DeleteNotification;
@@ -51,6 +52,7 @@ $uri = $_ENV['DB_USER']
 $connection = $mysql->createLazyConnection($uri);
 $posts = new Posts($connection);
 $users = new Users($connection);
+$likes = new Likes($connection);
 $authenticator = new Authenticator($users, $_ENV['JWT_KEY']);
 
 $routes = new RouteCollector(new Std(), new GroupCountBased());
@@ -61,7 +63,7 @@ $routes->post('/auth/signin', new SignInController($authenticator));
 $routes->get('/user', new GetAuthenticatedUser());
 
 // likes routes
-$routes->get('/post/{id:\d+}/like', new Like());
+$routes->get('/post/{id:\d+}/like', new Like($likes));
 $routes->get('/post/{id:\d+}/unlike', new UnLike());
 
 // movies routes

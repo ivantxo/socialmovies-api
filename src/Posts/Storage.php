@@ -84,6 +84,17 @@ final class Storage
             );
     }
 
+    public function updateLikeCount(int $post_id, int $like_count): PromiseInterface
+    {
+        return $this->connection
+            ->query('UPDATE posts SET like_count = ? WHERE id = ?', [$like_count, $post_id])
+            ->then(
+                function (QueryResult $result) use ($post_id) {
+                    return $this->getById($post_id);
+                }
+            );
+    }
+
     private function mapPost(array $row): Post
     {
         return new Post(
