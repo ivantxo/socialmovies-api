@@ -4,8 +4,6 @@ namespace App\Likes\Controller;
 
 
 use Psr\Http\Message\ServerRequestInterface;
-
-
 use App\Core\JsonResponse;
 use Exception;
 
@@ -33,6 +31,22 @@ final class Like
         $user_id = $request->getParsedBody()['user_id'];
         return $this->storage->create($post_id, $user_id)
             ->then(
+                function () use ($post_id) {
+                    return $this->storage->getPost($post_id);
+                }
+            )
+            ->then(
+                function (Post $post) {
+                    $likeCount = $post->like_count + 1;
+                    return $this->storage->updateLikeCount($post->id, $likeCount);
+                }
+            )
+            ->then(
+                function () use ($post_id) {
+                    return $this->storage->getPost($post_id);
+                }
+            )
+            ->then(
                 function (Post $post) {
                     $response = [
                         'post' => Output::fromEntity(
@@ -41,7 +55,9 @@ final class Like
                         ),
                     ];
                     return JsonResponse::ok($response);
-                },
+                }
+            )
+            ->otherwise(
                 function (Exception $exception) {
                     return JsonResponse::internalServerError($exception->getMessage());
                 }

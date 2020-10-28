@@ -9,8 +9,9 @@ use React\MySQL\QueryResult;
 use React\Promise\PromiseInterface;
 
 
-use App\Posts\Storage as Posts;
 use App\Posts\Post;
+use App\Posts\PostNotFound;
+use App\Posts\Storage as Posts;
 
 
 final class Storage
@@ -32,19 +33,28 @@ final class Storage
     public function create(int $post_id, int $user_id): PromiseInterface
     {
         return $this->connection
-            ->query('INSERT INTO likes (post_id, user_id) VALUES (?, ?)', [$post_id, $user_id])
+            ->query('INSERT INTO likes (post_id, user_id) VALUES (?, ?)', [$post_id, $user_id]);
+    }
+
+    public function getPost(int $post_id): PromiseInterface
+    {
+        $posts = new Posts($this->connection);
+        return $posts->getById($post_id)
             ->then(
-                function (QueryResult $result) use ($post_id) {
-                    $posts = new Posts($this->connection);
-                    return $posts->getById($post_id)
-                        ->then(
-                            function (Post $post) use ($posts) {
-                                $post_id = $post->id;
-                                $like_count = $post->like_count + 1;
-                                return $posts->updateLikeCount($post_id, $like_count);
-                            }
-                        );
+                function (Post $post) {
+                    return $post;
+                }
+            )
+            ->otherwise(
+                function () {
+                    throw new PostNotFound();
                 }
             );
+    }
+
+    public function updateLikeCount(int $postId, int $likeCount): PromiseInterface
+    {
+        $posts = new Posts($this->connection);
+        return $posts->updateLikeCount($postId, $likeCount);
     }
 }
