@@ -11,9 +11,9 @@ final class Post
     public $id;
 
     /**
-     * @var int $user_id
+     * @var int $userId
      */
-    public $user_id;
+    public $userId;
 
     /**
      * @var string $body
@@ -21,21 +21,21 @@ final class Post
     public $body;
 
     /**
-     * @var int $like_count
+     * @var int $likeCount
      */
-    public $like_count;
+    public $likeCount;
 
     /**
      * @var string $created_at
      */
-    public $created_at;
+    public $createdAt;
 
-    public function __construct(int $id, int $user_id, string $body, int $like_count, string $created_at)
+    public function __construct(int $id, int $userId, string $body, int $likeCount, string $createdAt)
     {
         $this->id = $id;
-        $this->user_id = $user_id;
+        $this->userId = $userId;
         $this->body = $body;
-        $this->like_count = $like_count;
-        $this->created_at = $created_at;
+        $this->likeCount = $likeCount;
+        $this->createdAt = $createdAt;
     }
 }

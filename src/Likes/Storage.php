@@ -30,10 +30,10 @@ final class Storage
         $this->connection = $connection;
     }
 
-    public function create(int $post_id, int $user_id): PromiseInterface
+    public function create(int $postId, int $userId): PromiseInterface
     {
         return $this->connection
-            ->query('INSERT INTO likes (post_id, user_id) VALUES (?, ?)', [$post_id, $user_id]);
+            ->query('INSERT INTO likes (post_id, user_id) VALUES (?, ?)', [$postId, $userId]);
     }
 
     public function delete(int $postId, int $userId): PromiseInterface
@@ -45,10 +45,10 @@ final class Storage
             );
     }
 
-    public function getPost(int $post_id): PromiseInterface
+    public function getPost(int $postId): PromiseInterface
     {
         $posts = new Posts($this->connection);
-        return $posts->getById($post_id)
+        return $posts->getById($postId)
             ->then(
                 function (Post $post) {
                     return $post;

@@ -25,10 +25,10 @@ final class Storage
         $this->connection = $connection;
     }
 
-    public function create(int $user_id, string $body, int $like_count): PromiseInterface
+    public function create(int $user_id, string $body, int $likeCount): PromiseInterface
     {
         return $this->connection
-            ->query('INSERT INTO posts (user_id, body, like_count) VALUES(?, ?, ?) ', [$user_id, $body, $like_count])
+            ->query('INSERT INTO posts (user_id, body, like_count) VALUES(?, ?, ?) ', [$user_id, $body, $likeCount])
             ->then(
                 function (QueryResult $result) {
                     return $this->getById($result->insertId)
@@ -84,10 +84,10 @@ final class Storage
             );
     }
 
-    public function updateLikeCount(int $post_id, int $likeCount): PromiseInterface
+    public function updateLikeCount(int $postId, int $likeCount): PromiseInterface
     {
         return $this->connection
-            ->query('UPDATE posts SET like_count = ? WHERE id = ?', [$likeCount, $post_id]);
+            ->query('UPDATE posts SET like_count = ? WHERE id = ?', [$likeCount, $postId]);
     }
 
     private function mapPost(array $row): Post

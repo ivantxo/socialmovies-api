@@ -29,10 +29,10 @@ final class CreatePost
 
     public function __invoke(ServerRequestInterface $request)
     {
-        $user_id = $request->getParsedBody()['user_id'];
+        $userId = $request->getParsedBody()['user_id'];
         $body = $request->getParsedBody()['body'];
-        $like_count = $request->getParsedBody()['like_count'];
-        return $this->storage->create($user_id, $body, $like_count)
+        $likeCount = $request->getParsedBody()['like_count'];
+        return $this->storage->create($userId, $body, $likeCount)
             ->then(
                 function (Post $post) {
                     $response = [

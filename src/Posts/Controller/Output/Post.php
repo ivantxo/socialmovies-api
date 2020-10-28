@@ -15,36 +15,36 @@ final class Post
     public $id;
 
     /**
-     * @var int $user_id
+     * @var int $userId
      */
-    public $user_id;
+    public $userId;
 
     /**
-     * @var int $like_count
+     * @var int $likeCount
      */
-    public $like_count;
+    public $likeCount;
 
     /**
-     * @var string $created_at
+     * @var string $createdAt
      */
-    public $created_at;
+    public $createdAt;
 
     /**
      * @var Request
      */
     public $request;
 
-    public function __construct(int $id, int $user_id, int $like_count, string $created_at, Request $request)
+    public function __construct(int $id, int $userId, int $likeCount, string $createdAt, Request $request)
     {
         $this->id = $id;
-        $this->user_id = $user_id;
-        $this->like_count = $like_count;
-        $this->created_at = $created_at;
+        $this->userId = $userId;
+        $this->likeCount = $likeCount;
+        $this->createdAt = $createdAt;
         $this->request = $request;
     }
 
     public static function fromEntity(PostEntity $post, Request $request)
     {
-        return new self($post->id, $post->user_id, $post->like_count, $post->created_at, $request);
+        return new self($post->id, $post->userId, $post->likeCount, $post->createdAt, $request);
     }
 }

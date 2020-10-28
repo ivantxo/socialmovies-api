@@ -8,9 +8,9 @@ use Exception;
 
 use App\Core\JsonResponse;
 use App\Likes\Storage;
-use App\Posts\Post;
 use App\Posts\Controller\Output\Post as Output;
 use App\Posts\Controller\Output\Request;
+use App\Posts\Post;
 
 
 final class UnLike
@@ -36,7 +36,7 @@ final class UnLike
             )
             ->then(
                 function (Post $post) {
-                    $likeCount = $post->like_count - 1;
+                    $likeCount = $post->likeCount - 1;
                     return $this->storage->updateLikeCount($post->id, $likeCount);
                 }
             )

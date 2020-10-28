@@ -4,14 +4,14 @@ namespace App\Likes\Controller;
 
 
 use Psr\Http\Message\ServerRequestInterface;
-use App\Core\JsonResponse;
 use Exception;
 
 
+use App\Core\JsonResponse;
 use App\Likes\Storage;
-use App\Posts\Post;
 use App\Posts\Controller\Output\Post as Output;
 use App\Posts\Controller\Output\Request;
+use App\Posts\Post;
 
 
 final class Like
@@ -26,24 +26,24 @@ final class Like
         $this->storage = $storage;
     }
 
-    public function __invoke(ServerRequestInterface $request, int $post_id)
+    public function __invoke(ServerRequestInterface $request, int $postId)
     {
-        $user_id = $request->getParsedBody()['user_id'];
-        return $this->storage->create($post_id, $user_id)
+        $userId = $request->getParsedBody()['user_id'];
+        return $this->storage->create($postId, $userId)
             ->then(
-                function () use ($post_id) {
-                    return $this->storage->getPost($post_id);
+                function () use ($postId) {
+                    return $this->storage->getPost($postId);
                 }
             )
             ->then(
                 function (Post $post) {
-                    $likeCount = $post->like_count + 1;
+                    $likeCount = $post->likeCount + 1;
                     return $this->storage->updateLikeCount($post->id, $likeCount);
                 }
             )
             ->then(
-                function () use ($post_id) {
-                    return $this->storage->getPost($post_id);
+                function () use ($postId) {
+                    return $this->storage->getPost($postId);
                 }
             )
             ->then(
