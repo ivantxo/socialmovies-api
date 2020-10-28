@@ -36,6 +36,15 @@ final class Storage
             ->query('INSERT INTO likes (post_id, user_id) VALUES (?, ?)', [$post_id, $user_id]);
     }
 
+    public function delete(int $postId, int $userId): PromiseInterface
+    {
+        return $this->connection
+            ->query(
+                'DELETE FROM likes WHERE post_id = ? AND user_id = ? ORDER BY created_at DESC LIMIT 1',
+                [$postId, $userId]
+            );
+    }
+
     public function getPost(int $post_id): PromiseInterface
     {
         $posts = new Posts($this->connection);

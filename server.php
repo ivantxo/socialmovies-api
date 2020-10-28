@@ -64,7 +64,7 @@ $routes->get('/user', new GetAuthenticatedUser());
 
 // likes routes
 $routes->get('/post/{id:\d+}/like', new Like($likes));
-$routes->get('/post/{id:\d+}/unlike', new UnLike());
+$routes->get('/post/{id:\d+}/unlike', new UnLike($likes));
 
 // movies routes
 $routes->post('linkmovie/{id:\d+}', new LinkMovie());
