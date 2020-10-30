@@ -17,7 +17,7 @@ use React\MySQL\Factory as MySQLFactory;
 use App\Core\Router;
 use App\Core\ErrorHandler;
 use App\Core\JsonRequestDecoder;
-use App\Authentication\Storage as Users;
+use App\Authentication\Storage as AuthModel;
 use App\Authentication\Authenticator;
 use App\Authentication\SignUpController;
 use App\Authentication\SignInController;
@@ -36,9 +36,9 @@ use App\Posts\Controller\CreatePost;
 use App\Posts\Controller\DeletePost;
 use App\Posts\Controller\GetAllPosts;
 use App\Posts\Controller\GetPostById;
-use App\Users\AddUserDetails;
-use App\Users\GetUserDetails;
-
+use App\Users\Storage as Users;
+use App\Users\Controller\AddUserDetails;
+use App\Users\Controller\GetUserDetails;
 
 $loop = Factory::create();
 
@@ -51,14 +51,15 @@ $uri = $_ENV['DB_USER']
     . '/' . $_ENV['DB_NAME'];
 $connection = $mysql->createLazyConnection($uri);
 $posts = new Posts($connection);
-$users = new Users($connection);
+$authModel = new AuthModel($connection);
+$authenticator = new Authenticator($authModel, $_ENV['JWT_KEY']);
 $likes = new Likes($connection);
-$authenticator = new Authenticator($users, $_ENV['JWT_KEY']);
+$users = new Users($connection);
 
 $routes = new RouteCollector(new Std(), new GroupCountBased());
 
 // authentication routes
-$routes->post('/auth/signup', new SignUpController($users));
+$routes->post('/auth/signup', new SignUpController($authModel));
 $routes->post('/auth/signin', new SignInController($authenticator));
 $routes->get('/user', new GetAuthenticatedUser());
 
@@ -84,7 +85,7 @@ $routes->get('/posts/{id:\d+}', new GetPostById($posts));
 
 // users routes
 $routes->post('/users', new AddUserDetails());
-$routes->get('/users/{id:\d+}', new GetUserDetails());
+$routes->get('/users/{id:\d+}', new GetUserDetails($users));
 
 
 $server = new Server(

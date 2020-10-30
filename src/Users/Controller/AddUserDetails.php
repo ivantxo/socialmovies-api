@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\Users;
+namespace App\Users\Controller;
 
 
 use Psr\Http\Message\ServerRequestInterface;
