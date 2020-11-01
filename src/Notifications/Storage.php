@@ -29,4 +29,13 @@ final class Storage
                 [$postId, $senderId, $recipientId, false, $type]
             );
     }
+
+    public function delete(int $postId, int $senderId, int $recipientId, string $type)
+    {
+        return $this->connection
+            ->query(
+                'DELETE FROM notifications WHERE post_id = ? AND sender = ? AND recipient = ? AND type = ?',
+                [$postId, $senderId, $recipientId, $type]
+            );
+    }
 }

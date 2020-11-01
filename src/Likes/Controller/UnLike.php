@@ -35,9 +35,14 @@ final class UnLike
                 }
             )
             ->then(
-                function (Post $post) {
+                function (Post $post) use ($userId) {
                     $likeCount = $post->likeCount - 1;
-                    return $this->storage->updateLikeCount($post->id, $likeCount);
+                    return $this->storage->updateLikeCount($post->id, $likeCount)
+                        ->then(
+                            function () use ($post, $userId) {
+                                return $this->storage->deleteNotification($post, $userId);
+                            }
+                        );
                 }
             )
             ->then(

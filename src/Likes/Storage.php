@@ -73,4 +73,10 @@ final class Storage
         $notifications = new Notifications($this->connection);
         return $notifications->create($post->id, $userId, $post->userId, 'like');
     }
+
+    public function deleteNotification(Post $post, int $userId): PromiseInterface
+    {
+        $notifications = new Notifications($this->connection);
+        return $notifications->delete($post->id, $userId, $post->userId, 'like');
+    }
 }
