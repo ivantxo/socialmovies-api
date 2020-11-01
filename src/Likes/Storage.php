@@ -12,6 +12,7 @@ use React\Promise\PromiseInterface;
 use App\Posts\Post;
 use App\Posts\PostNotFound;
 use App\Posts\Storage as Posts;
+use App\Notifications\Storage as Notifications;
 
 
 final class Storage
@@ -65,5 +66,11 @@ final class Storage
     {
         $posts = new Posts($this->connection);
         return $posts->updateLikeCount($postId, $likeCount);
+    }
+
+    public function createNotification(Post $post, int $userId): PromiseInterface
+    {
+        $notifications = new Notifications($this->connection);
+        return $notifications->create($post->id, $userId, $post->userId, 'like');
     }
 }

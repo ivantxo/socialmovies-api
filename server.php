@@ -26,11 +26,7 @@ use App\Likes\Storage as Likes;
 use App\Likes\Controller\Like;
 use App\Likes\Controller\UnLike;
 use App\Movies\LinkMovie;
-use App\Notifications\CreateNotification;
-use App\Notifications\DeleteNotification;
-use App\Notifications\GetAllNotifications;
-use App\Notifications\GetNotificationsByUserId;
-use App\Notifications\MarkNotificationsRead;
+use App\Notifications\Controller\MarkNotificationsRead;
 use App\Posts\Storage as Posts;
 use App\Posts\Controller\CreatePost;
 use App\Posts\Controller\DeletePost;
@@ -71,11 +67,7 @@ $routes->get('/post/{id:\d+}/unlike', new UnLike($likes));
 $routes->post('linkmovie/{id:\d+}', new LinkMovie());
 
 // notifications routes
-$routes->post('/notifications', new CreateNotification());
-$routes->delete('/notifications/{id:\d+}', new DeleteNotification());
-$routes->get('/notifications', new GetAllNotifications());
-$routes->get('/notifications/{id:\d+}', new GetNotificationsByUserId());
-$routes->post('/notificationsread', new MarkNotificationsRead());
+$routes->post('/notificationsread/{id:\d+}', new MarkNotificationsRead());
 
 // posts routes
 $routes->post('/posts', new CreatePost($posts));

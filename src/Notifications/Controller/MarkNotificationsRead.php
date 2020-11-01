@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Notifications;
+namespace App\Notifications\Controller;
 
 
 use Psr\Http\Message\ServerRequestInterface;

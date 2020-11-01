@@ -36,9 +36,14 @@ final class Like
                 }
             )
             ->then(
-                function (Post $post) {
+                function (Post $post) use ($userId) {
                     $likeCount = $post->likeCount + 1;
-                    return $this->storage->updateLikeCount($post->id, $likeCount);
+                    return $this->storage->updateLikeCount($post->id, $likeCount)
+                        ->then(
+                            function () use ($post, $userId) {
+                                return $this->storage->createNotification($post, $userId);
+                            }
+                        );
                 }
             )
             ->then(
