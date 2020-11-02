@@ -28,7 +28,12 @@ final class UnLike
     public function __invoke(ServerRequestInterface $request, int $postId)
     {
         $userId = $request->getParsedBody()['user_id'];
-        return $this->storage->delete($postId, $userId)
+        return $this->storage->likeExists($postId, $userId)
+            ->then(
+                function () use ($postId, $userId) {
+                    return $this->storage->delete($postId, $userId);
+                }
+            )
             ->then(
                 function () use ($postId) {
                     return $this->storage->getPost($postId);
@@ -63,7 +68,9 @@ final class UnLike
             )
             ->otherwise(
                 function (Exception $exception) {
-                    return JsonResponse::internalServerError($exception->getMessage());
+                    return JsonResponse::badRequest([
+                        'like' => 'Like was not found'
+                    ]);
                 }
             );
     }

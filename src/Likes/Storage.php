@@ -46,6 +46,20 @@ final class Storage
             );
     }
 
+    public function likeExists(int $postId, int $userId): PromiseInterface
+    {
+        return $this->connection
+            ->query('SELECT id, post_id, user_id FROM likes WHERE post_id = ? AND user_id =  ?', [$postId, $userId])
+            ->then(
+                function (QueryResult $result) {
+                    if (empty($result->resultRows)) {
+                        throw new LikeNotFound();
+                    }
+                    return true;
+                }
+            );
+    }
+
     public function getPost(int $postId): PromiseInterface
     {
         $posts = new Posts($this->connection);
