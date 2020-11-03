@@ -11,6 +11,10 @@ use function React\Promise\resolve;
 use function React\Promise\reject;
 
 
+use App\Posts\Storage as Posts;
+use App\Likes\Storage as Likes;
+
+
 final class Storage
 {
     /**
@@ -43,5 +47,32 @@ final class Storage
                     return new User((int)$row['id'], $row['email'], $row['password']);
                 }
             );
+    }
+
+    public function getByUserId(int $useId): PromiseInterface
+    {
+        return $this->connection
+            ->query('SELECT id, email, password FROM users WHERE id = ?', [$useId])
+            ->then(
+                function (QueryResult $result) {
+                    if (empty($result->resultRows)) {
+                        throw new UserNotFound();
+                    }
+                    $row = $result->resultRows[0];
+                    return new User((int)$row['id'], $row['email'], $row['password']);
+                }
+            );
+    }
+
+    public function getPosts(int $userId): PromiseInterface
+    {
+        $posts = new Posts($this->connection);
+        return $posts->getByUserId($userId);
+    }
+
+    public function getLikes(int $userId): PromiseInterface
+    {
+        $likes = new Likes($this->connection);
+        return $likes->getByUserId($userId);
     }
 }

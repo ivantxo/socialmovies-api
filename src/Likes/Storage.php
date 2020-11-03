@@ -93,4 +93,18 @@ final class Storage
         $notifications = new Notifications($this->connection);
         return $notifications->delete($post->id, $userId, $post->userId, 'like');
     }
+
+    public function getByUserId(int $userId): PromiseInterface
+    {
+        return $this->connection
+            ->query('SELECT id, post_id, user_id, created_at FROM likes WHERE user_id = ?', [$userId])
+            ->then(
+                function (QueryResult $result) {
+                    if (empty($result->resultRows)) {
+                        return [];
+                    }
+                    return $result->resultRows;
+                }
+            );
+    }
 }

@@ -90,6 +90,25 @@ final class Storage
             ->query('UPDATE posts SET like_count = ? WHERE id = ?', [$likeCount, $postId]);
     }
 
+    public function getByUserId(int $userId): PromiseInterface
+    {
+        return $this->connection
+            ->query('SELECT id, user_id, body, like_count, created_at FROM posts WHERE user_id = ?', [$userId])
+            ->then(
+                function (QueryResult $result) {
+                    if (empty($result->resultRows)) {
+                        return [];
+                    }
+                    return array_map(
+                        function ($row) {
+                            return $this->mapPost($row);
+                        },
+                        $result->resultRows
+                    );
+                }
+            );
+    }
+
     private function mapPost(array $row): Post
     {
         return new Post(

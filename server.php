@@ -47,17 +47,17 @@ $uri = $_ENV['DB_USER']
     . '/' . $_ENV['DB_NAME'];
 $connection = $mysql->createLazyConnection($uri);
 $posts = new Posts($connection);
-$authModel = new AuthModel($connection);
-$authenticator = new Authenticator($authModel, $_ENV['JWT_KEY']);
+$authStorage = new AuthModel($connection);
+$authenticator = new Authenticator($authStorage, $_ENV['JWT_KEY']);
 $likes = new Likes($connection);
 $users = new Users($connection);
 
 $routes = new RouteCollector(new Std(), new GroupCountBased());
 
 // authentication routes
-$routes->post('/auth/signup', new SignUpController($authModel));
+$routes->post('/auth/signup', new SignUpController($authStorage));
 $routes->post('/auth/signin', new SignInController($authenticator));
-$routes->get('/user', new GetAuthenticatedUser());
+$routes->get('/user/{id:\d+}', new GetAuthenticatedUser($authStorage));
 
 // likes routes
 $routes->get('/post/{id:\d+}/like', new Like($likes));
