@@ -1,0 +1,33 @@
+# ./docker-compose.yml
+
+version: '3'
+
+services:
+    php:
+        build:
+            context: .
+            dockerfile: dev/docker/php/Dockerfile
+        image: php:7.2.2-apache
+        container_name: php_web
+        depends_on:
+            - mysql
+        volumes:
+            - ./:/var/www:cached
+        ports:
+            - "8000:8000"
+        stdin_open: true
+        tty: true
+
+    mysql:
+        image: mysql:8.0
+        environment:
+            MYSQL_ROOT_PASSWORD: mysql
+            MYSQL_DATABASE: social_movies
+            MYSQL_USER: root
+            MYSQL_PASSWORD: mysql
+        ports:
+            - '3306:3306'
+        restart: always
+        cap_add:
+            - SYS_NICE
+        command: --default-authentication-plugin=mysql_native_password
