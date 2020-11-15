@@ -26,6 +26,7 @@ use App\Likes\Storage as Likes;
 use App\Likes\Controller\Like;
 use App\Likes\Controller\UnLike;
 use App\Movies\LinkMovie;
+use App\Notifications\Storage as Notifications;
 use App\Notifications\Controller\MarkNotificationsRead;
 use App\Posts\Storage as Posts;
 use App\Posts\Controller\CreatePost;
@@ -51,6 +52,7 @@ $authStorage = new AuthModel($connection);
 $authenticator = new Authenticator($authStorage, $_ENV['JWT_KEY']);
 $likes = new Likes($connection);
 $users = new Users($connection);
+$notifications = new Notifications($connection);
 
 $routes = new RouteCollector(new Std(), new GroupCountBased());
 
@@ -67,7 +69,7 @@ $routes->get('/post/{id:\d+}/unlike', new UnLike($likes));
 $routes->post('linkmovie/{id:\d+}', new LinkMovie());
 
 // notifications routes
-$routes->post('/notificationsread/{id:\d+}', new MarkNotificationsRead());
+$routes->post('/notificationsread/{id:\d+}', new MarkNotificationsRead($notifications));
 
 // posts routes
 $routes->post('/posts', new CreatePost($posts));

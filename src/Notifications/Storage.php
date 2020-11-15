@@ -6,6 +6,7 @@ namespace App\Notifications;
 
 use React\MySQL\ConnectionInterface;
 use React\MySQL\QueryResult;
+use React\Promise\Promise;
 use React\Promise\PromiseInterface;
 
 
@@ -36,6 +37,15 @@ final class Storage
             ->query(
                 'DELETE FROM notifications WHERE post_id = ? AND sender = ? AND recipient = ? AND type = ?',
                 [$postId, $senderId, $recipientId, $type]
+            );
+    }
+
+    public function markRead(int $notificationId)
+    {
+        return $this->connection
+            ->query(
+                'UPDATE notifications SET was_read = TRUE WHERE id = ?',
+                [$notificationId]
             );
     }
 }
